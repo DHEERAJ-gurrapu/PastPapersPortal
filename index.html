@@ -1,1 +1,576 @@
+import React, { useState } from 'react';
+import { BookOpen, Download, Search, Calendar, FileText, Menu, Home, ChevronRight, GraduationCap, Filter, Clock } from 'lucide-react';
 
+const PastPapersPortal = () => {
+  const [currentBoard, setCurrentBoard] = useState('igcse');
+  const [currentPage, setCurrentPage] = useState('home');
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [selectedGrade, setSelectedGrade] = useState('10');
+
+  const boards = {
+    igcse: {
+      name: 'IGCSE',
+      fullName: 'International General Certificate of Secondary Education',
+      grades: ['9', '10', '11'],
+      subjects: [
+        {
+          id: 'mathematics-core',
+          name: 'Mathematics - Core (0580)',
+          code: '0580',
+          grades: ['9', '10', '11'],
+          papers: [
+            { year: 2024, session: 'May/June', variants: ['Paper 1 (Core)', 'Paper 3 (Core)'] },
+            { year: 2023, session: 'Oct/Nov', variants: ['Paper 1 (Core)', 'Paper 3 (Core)'] },
+            { year: 2023, session: 'May/June', variants: ['Paper 1 (Core)', 'Paper 3 (Core)'] },
+            { year: 2022, session: 'Oct/Nov', variants: ['Paper 1 (Core)', 'Paper 3 (Core)'] }
+          ]
+        },
+        {
+          id: 'mathematics-extended',
+          name: 'Mathematics - Extended (0580)',
+          code: '0580',
+          grades: ['9', '10', '11'],
+          papers: [
+            { year: 2024, session: 'May/June', variants: ['Paper 2 (Extended)', 'Paper 4 (Extended)'] },
+            { year: 2023, session: 'Oct/Nov', variants: ['Paper 2 (Extended)', 'Paper 4 (Extended)'] },
+            { year: 2023, session: 'May/June', variants: ['Paper 2 (Extended)', 'Paper 4 (Extended)'] },
+            { year: 2022, session: 'Oct/Nov', variants: ['Paper 2 (Extended)', 'Paper 4 (Extended)'] }
+          ]
+        },
+        {
+          id: 'additional-mathematics',
+          name: 'Additional Mathematics',
+          code: '0606',
+          grades: ['10', '11'],
+          papers: [
+            { year: 2024, session: 'May/June', variants: ['Paper 1', 'Paper 2'] },
+            { year: 2023, session: 'Oct/Nov', variants: ['Paper 1', 'Paper 2'] },
+            { year: 2023, session: 'May/June', variants: ['Paper 1', 'Paper 2'] },
+            { year: 2022, session: 'Oct/Nov', variants: ['Paper 1', 'Paper 2'] }
+          ]
+        },
+        {
+          id: 'physics',
+          name: 'Physics',
+          code: '0625',
+          grades: ['9', '10', '11'],
+          papers: [
+            { year: 2024, session: 'May/June', variants: ['Paper 1', 'Paper 2', 'Paper 3', 'Paper 4', 'Paper 6'] },
+            { year: 2023, session: 'Oct/Nov', variants: ['Paper 1', 'Paper 2', 'Paper 3', 'Paper 4', 'Paper 6'] }
+          ]
+        },
+        {
+          id: 'chemistry',
+          name: 'Chemistry',
+          code: '0620',
+          grades: ['9', '10', '11'],
+          papers: [
+            { year: 2024, session: 'May/June', variants: ['Paper 1', 'Paper 2', 'Paper 3', 'Paper 4', 'Paper 6'] },
+            { year: 2023, session: 'Oct/Nov', variants: ['Paper 1', 'Paper 2', 'Paper 3', 'Paper 4', 'Paper 6'] }
+          ]
+        },
+        {
+          id: 'biology',
+          name: 'Biology',
+          code: '0610',
+          grades: ['9', '10', '11'],
+          papers: [
+            { year: 2024, session: 'May/June', variants: ['Paper 1', 'Paper 2', 'Paper 3', 'Paper 4', 'Paper 6'] },
+            { year: 2023, session: 'Oct/Nov', variants: ['Paper 1', 'Paper 2', 'Paper 3', 'Paper 4', 'Paper 6'] }
+          ]
+        },
+        {
+          id: 'english',
+          name: 'English as a Second Language',
+          code: '0510',
+          grades: ['9', '10', '11'],
+          papers: [
+            { year: 2024, session: 'May/June', variants: ['Paper 1', 'Paper 2', 'Paper 3'] },
+            { year: 2023, session: 'Oct/Nov', variants: ['Paper 1', 'Paper 2', 'Paper 3'] }
+          ]
+        }
+      ]
+    },
+    cbse: {
+      name: 'CBSE',
+      fullName: 'Central Board of Secondary Education',
+      grades: ['9', '10', '11', '12'],
+      subjects: [
+        {
+          id: 'mathematics',
+          name: 'Mathematics',
+          code: '041',
+          grades: ['9', '10', '11', '12'],
+          papers: [
+            { year: 2024, session: 'Annual', variants: ['Basic', 'Standard'] },
+            { year: 2023, session: 'Annual', variants: ['Basic', 'Standard'] },
+            { year: 2022, session: 'Annual', variants: ['Basic', 'Standard'] }
+          ]
+        },
+        {
+          id: 'science',
+          name: 'Science',
+          code: '086',
+          grades: ['9', '10'],
+          papers: [
+            { year: 2024, session: 'Annual', variants: ['Theory', 'Practical'] },
+            { year: 2023, session: 'Annual', variants: ['Theory', 'Practical'] }
+          ]
+        },
+        {
+          id: 'physics',
+          name: 'Physics',
+          code: '042',
+          grades: ['11', '12'],
+          papers: [
+            { year: 2024, session: 'Annual', variants: ['Theory', 'Practical'] },
+            { year: 2023, session: 'Annual', variants: ['Theory', 'Practical'] }
+          ]
+        },
+        {
+          id: 'english',
+          name: 'English',
+          code: '101',
+          grades: ['9', '10', '11', '12'],
+          papers: [
+            { year: 2024, session: 'Annual', variants: ['Language & Literature'] },
+            { year: 2023, session: 'Annual', variants: ['Language & Literature'] }
+          ]
+        }
+      ]
+    },
+    ssc: {
+      name: 'SSC',
+      fullName: 'Secondary School Certificate (Maharashtra Board)',
+      grades: ['9', '10'],
+      subjects: [
+        {
+          id: 'mathematics',
+          name: 'Mathematics',
+          code: 'Part I & II',
+          grades: ['9', '10'],
+          papers: [
+            { year: 2024, session: 'March', variants: ['Paper 1', 'Paper 2'] },
+            { year: 2023, session: 'March', variants: ['Paper 1', 'Paper 2'] },
+            { year: 2022, session: 'March', variants: ['Paper 1', 'Paper 2'] }
+          ]
+        },
+        {
+          id: 'science',
+          name: 'Science & Technology',
+          code: 'Part I & II',
+          grades: ['9', '10'],
+          papers: [
+            { year: 2024, session: 'March', variants: ['Paper 1', 'Paper 2'] },
+            { year: 2023, session: 'March', variants: ['Paper 1', 'Paper 2'] }
+          ]
+        },
+        {
+          id: 'english',
+          name: 'English',
+          code: 'First Language',
+          grades: ['9', '10'],
+          papers: [
+            { year: 2024, session: 'March', variants: ['Paper 1', 'Paper 2'] },
+            { year: 2023, session: 'March', variants: ['Paper 1', 'Paper 2'] }
+          ]
+        }
+      ]
+    }
+  };
+
+  const currentBoardData = boards[currentBoard];
+  const filteredSubjects = currentBoardData.subjects.filter(subject =>
+    subject.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    subject.grades.includes(selectedGrade)
+  );
+
+  const handleDownload = (subject, paper, variant) => {
+    const filename = `${currentBoardData.name}_${subject.code}_${subject.name}_${paper.year}_${paper.session}_${variant}.pdf`;
+    alert(`Downloading: ${filename}\n\nNote: This is a demo. In a real application, this would download the actual PDF file from your server.`);
+  };
+
+  const handleDownloadAll = (subject, paper, type) => {
+    const filename = `${currentBoardData.name}_${subject.code}_${subject.name}_${paper.year}_${paper.session}_${type}.zip`;
+    alert(`Downloading All ${type}: ${filename}\n\nNote: This is a demo. In a real application, this would download a ZIP file containing all ${type.toLowerCase()} from your server.`);
+  };
+
+  const WelcomePage = () => (
+    <div className="space-y-8">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl p-12 shadow-2xl text-center">
+        <GraduationCap className="w-20 h-20 mx-auto mb-6 opacity-90" />
+        <h1 className="text-5xl font-bold mb-4">Welcome to Past Papers Portal</h1>
+        <p className="text-2xl text-blue-100 mb-6">Your Complete Exam Preparation Resource</p>
+        <p className="text-lg text-blue-50 max-w-3xl mx-auto">
+          Access comprehensive past examination papers for IGCSE, CBSE, and SSC boards. 
+          Practice with authentic materials to excel in your exams.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {Object.entries(boards).map(([key, board]) => (
+          <div
+            key={key}
+            onClick={() => {
+              setCurrentBoard(key);
+              setCurrentPage('subjects');
+              setSelectedGrade(board.grades[0]);
+            }}
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all cursor-pointer border-2 border-gray-200 hover:border-indigo-400 transform hover:-translate-y-2"
+          >
+            <div className="bg-gradient-to-br from-indigo-100 to-purple-100 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+              <BookOpen className="w-8 h-8 text-indigo-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2 text-center">{board.name}</h3>
+            <p className="text-gray-600 text-center mb-4">{board.fullName}</p>
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-6">
+              <Calendar className="w-4 h-4" />
+              <span>Grades {board.grades.join(', ')}</span>
+            </div>
+            <button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold flex items-center justify-center gap-2">
+              Browse Papers <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-indigo-200 rounded-xl p-10">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Why Choose Our Platform?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center">
+            <div className="bg-gradient-to-br from-indigo-100 to-indigo-200 w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <FileText className="w-10 h-10 text-indigo-700" />
+            </div>
+            <h3 className="font-bold text-xl mb-3">Comprehensive Collection</h3>
+            <p className="text-gray-600">Access years of past papers across all major subjects and boards</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-gradient-to-br from-purple-100 to-purple-200 w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <Download className="w-10 h-10 text-purple-700" />
+            </div>
+            <h3 className="font-bold text-xl mb-3">Easy Access</h3>
+            <p className="text-gray-600">Download question papers, mark schemes, and examiner reports instantly</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-gradient-to-br from-blue-100 to-blue-200 w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <Clock className="w-10 h-10 text-blue-700" />
+            </div>
+            <h3 className="font-bold text-xl mb-3">Regular Updates</h3>
+            <p className="text-gray-600">Latest examination papers added as soon as they become available</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-lg p-10 border border-gray-200">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">How It Works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="text-center">
+            <div className="bg-indigo-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">1</div>
+            <h4 className="font-semibold mb-2">Choose Your Board</h4>
+            <p className="text-sm text-gray-600">Select from IGCSE, CBSE, or SSC</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">2</div>
+            <h4 className="font-semibold mb-2">Pick Your Subject</h4>
+            <p className="text-sm text-gray-600">Browse through available subjects</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">3</div>
+            <h4 className="font-semibold mb-2">Select Papers</h4>
+            <p className="text-sm text-gray-600">Choose year and session</p>
+          </div>
+          <div className="text-center">
+            <div className="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mb-4 mx-auto">4</div>
+            <h4 className="font-semibold mb-2">Download & Practice</h4>
+            <p className="text-sm text-gray-600">Get papers and start preparing</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const SubjectsPage = () => (
+    <div className="space-y-8">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white rounded-xl p-8 shadow-xl">
+        <h1 className="text-4xl font-bold mb-3">{currentBoardData.fullName}</h1>
+        <p className="text-xl text-blue-100 mb-4">Grade {selectedGrade} Past Papers</p>
+      </div>
+
+
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 flex items-center gap-2">
+            <Search className="w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search subjects..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Filter className="w-5 h-5 text-gray-400" />
+            <select
+              value={selectedGrade}
+              onChange={(e) => setSelectedGrade(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              {currentBoardData.grades.map(grade => (
+                <option key={grade} value={grade}>Grade {grade}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredSubjects.map(subject => (
+          <div
+            key={subject.id}
+            onClick={() => {
+              setSelectedSubject(subject);
+              setCurrentPage('subject');
+            }}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-2xl transition-all cursor-pointer border border-gray-200 hover:border-indigo-300"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="bg-indigo-100 p-3 rounded-lg">
+                <BookOpen className="w-7 h-7 text-indigo-600" />
+              </div>
+              <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full font-medium">{subject.code}</span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">{subject.name}</h3>
+            <p className="text-gray-600 text-sm mb-4">
+              <Clock className="w-4 h-4 inline mr-1" />
+              {subject.papers.length} exam sessions
+            </p>
+            <button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center justify-center gap-2 font-medium">
+              View Papers <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const SubjectPage = () => {
+    if (!selectedSubject) return null;
+
+    return (
+      <div className="space-y-6">
+        <button
+          onClick={() => setCurrentPage('subjects')}
+          className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium"
+        >
+          <ChevronRight className="w-4 h-4 rotate-180" />
+          Back to Subjects
+        </button>
+
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-xl p-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm text-indigo-200 mb-2">{currentBoardData.name} - Grade {selectedGrade}</div>
+              <h1 className="text-4xl font-bold mb-2">{selectedSubject.name}</h1>
+              <p className="text-indigo-100">Subject Code: {selectedSubject.code}</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+              <BookOpen className="w-12 h-12" />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-5">
+          {selectedSubject.papers.map((paper, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-gray-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">{paper.year}</h3>
+                    <p className="text-gray-600 text-sm">{paper.session} Session</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Calendar className="w-4 h-4" />
+                    {paper.variants.length} Papers
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                  {paper.variants.map((variant, vIndex) => (
+                    <button
+                      key={vIndex}
+                      onClick={() => handleDownload(selectedSubject, paper, variant)}
+                      className="flex items-center justify-between bg-gradient-to-br from-gray-50 to-indigo-50 hover:from-indigo-50 hover:to-purple-50 border border-gray-200 hover:border-indigo-300 rounded-lg p-4 transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="bg-white p-2 rounded-lg shadow-sm">
+                          <FileText className="w-4 h-4 text-indigo-600" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">{variant}</span>
+                      </div>
+                      <Download className="w-4 h-4 text-gray-400" />
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
+                  <button 
+                    onClick={() => handleDownloadAll(selectedSubject, paper, 'Question Papers')}
+                    className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 text-sm font-medium bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download All Papers
+                  </button>
+                  <button 
+                    onClick={() => handleDownloadAll(selectedSubject, paper, 'Mark Schemes')}
+                    className="flex items-center gap-2 text-purple-600 hover:text-purple-700 text-sm font-medium bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    Mark Schemes
+                  </button>
+                  <button 
+                    onClick={() => handleDownloadAll(selectedSubject, paper, 'Examiner Reports')}
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Examiner Reports
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <nav className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              <GraduationCap className="w-8 h-8 text-indigo-600" />
+              <div>
+                <span className="text-xl font-bold text-gray-800 block">Past Papers Portal</span>
+                <span className="text-xs text-gray-500 hidden sm:block">IGCSE, CBSE & SSC</span>
+              </div>
+            </div>
+
+            <div className="hidden md:flex items-center bg-gray-100 rounded-lg px-3 py-1">
+              <span className="text-sm font-medium text-gray-700">{currentBoardData.name}</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="flex flex-1">
+        <aside className={`fixed lg:sticky top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white shadow-lg z-40 transform transition-transform duration-300 ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+          <div className="h-full overflow-y-auto p-6">
+            <div className="mb-8">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Examination Boards</h3>
+              <div className="space-y-2">
+                {Object.entries(boards).map(([key, board]) => (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      setCurrentBoard(key);
+                      setCurrentPage('subjects');
+                      setSelectedGrade(board.grades[0]);
+                      setMobileSidebarOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${currentBoard === key ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{board.name}</span>
+                      {currentBoard === key && <ChevronRight className="w-4 h-4" />}
+                    </div>
+                    <div className="text-xs mt-1 opacity-75">
+                      {board.grades.length} Grades
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-6">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Quick Links</h3>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setCurrentPage('home')}
+                  className="w-full text-left px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                >
+                  <Home className="w-4 h-4" />
+                  Home
+                </button>
+                <button className="w-full text-left px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Exam Calendar
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {mobileSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+        )}
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          {currentPage === 'home' && <WelcomePage />}
+          {currentPage === 'subjects' && <SubjectsPage />}
+          {currentPage === 'subject' && <SubjectPage />}
+        </main>
+      </div>
+
+      <footer className="bg-gray-900 text-white mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <GraduationCap className="w-8 h-8" />
+                <span className="text-xl font-bold">Past Papers Portal</span>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Comprehensive past papers for IGCSE, CBSE, and SSC boards.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Resources</h3>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li>All Subjects</li>
+                <li>Recent Papers</li>
+                <li>Study Tips</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li>Contact Us</li>
+                <li>FAQ</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+            <p>Educational resource for students.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default PastPapersPortal;
